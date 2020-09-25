@@ -3,7 +3,7 @@ const greetingInput = greetingContainer.querySelector("input");
 const greetingTitle = document.querySelector(".js-greeting__title");
 const delBtn = document.querySelector(".js-greeting__del-title");
 
-const LS_KEY = "currentUser";
+const LS_GREET_KEY = "currentUser";
 const CN_HIDE = "hiding";
 const CN_SHOW = "showing";
 
@@ -32,13 +32,13 @@ function saveName() {
   greetingContainer.addEventListener("submit", function (event) {
     event.preventDefault();
     let name = greetingInput.value;
-    localStorage.setItem(LS_KEY, name);
+    localStorage.setItem(LS_GREET_KEY, name);
     showName(name);
   });
 }
 
 function loadName() {
-  const LS_VALUE = localStorage.getItem(LS_KEY);
+  const LS_VALUE = localStorage.getItem(LS_GREET_KEY);
   if (LS_VALUE === null) {
     saveName();
   } else {
@@ -51,7 +51,7 @@ function loadName() {
 function init() {
   loadName();
   delBtn.addEventListener("click", function (event) {
-    localStorage.removeItem(LS_KEY);
+    localStorage.removeItem(LS_GREET_KEY);
     loadName();
   });
 }

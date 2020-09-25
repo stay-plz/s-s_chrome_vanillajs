@@ -8,6 +8,7 @@ let toDos = [];
 
 function deleteToDo(event) {
   const btn = event.target;
+  console.log(btn);
   const li = btn.parentNode;
   toDoList.removeChild(li);
   const cleadToDos = toDos.filter(function (toDo) {
