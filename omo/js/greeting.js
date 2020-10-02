@@ -1,58 +1,54 @@
-const greetingContainer = document.querySelector(".js-greeting");
-const greetingInput = greetingContainer.querySelector("input");
-const greetingTitle = document.querySelector(".js-greeting__title");
-const delBtn = document.querySelector(".js-greeting__del-title");
+const grContainer = document.querySelector(".js-greeting");
+const grInput = grContainer.querySelector("input");
+const grTitle = document.querySelector(".js-greetingTitle");
 
-const LS_GREET_KEY = "currentUser";
-const CN_HIDE = "hiding";
-const CN_SHOW = "showing";
+const LS_KEY = "userName";
 
-function showing(container) {
-  if (container.classList.contains(CN_HIDE)) {
-    container.classList.remove(CN_HIDE);
-  }
-  container.classList.add(CN_SHOW);
+function setLs(name) {
+  localStorage.setItem(LS_KEY, name);
 }
 
-function hiding(container) {
-  if (container.classList.contains(CN_SHOW)) {
-    container.classList.remove(CN_SHOW);
-  }
-  container.classList.add(CN_HIDE);
+function setTitle(name) {
+  grTitle.innerText = name;
 }
 
-function showName(name) {
-  greetingTitle.innerText = name;
-  hiding(greetingContainer);
-  showing(greetingTitle);
-}
-function saveName() {
-  showing(greetingContainer);
-  hiding(greetingTitle);
-  greetingContainer.addEventListener("submit", function (event) {
-    event.preventDefault();
-    let name = greetingInput.value;
-    localStorage.setItem(LS_GREET_KEY, name);
-    showName(name);
-  });
+function getName() {
+  const inputName = grInput.value;
+  return inputName;
 }
 
-function loadName() {
-  const LS_VALUE = localStorage.getItem(LS_GREET_KEY);
-  if (LS_VALUE === null) {
-    saveName();
+function handleSubmit(event) {
+  event.preventDefault();
+  const inputName = getName();
+  setTitle(inputName);
+  setLs(inputName);
+  showing(grTitle);
+  hiding(grInput);
+}
+
+function showing(element) {
+  element.classList.add("show");
+  element.classList.remove("hide");
+}
+function hiding(element) {
+  element.classList.add("hide");
+  element.classList.remove("show");
+}
+
+function loadGreeting() {
+  const name = localStorage.getItem(LS_KEY);
+  if (name === null) {
+    hiding(grTitle);
+    showing(grInput);
   } else {
-    greetingTitle.innerText = LS_VALUE;
-    hiding(greetingContainer);
-    showing(greetingTitle);
+    hiding(grInput);
+    showing(grTitle);
+    setTitle(name);
   }
 }
 
 function init() {
-  loadName();
-  delBtn.addEventListener("click", function (event) {
-    localStorage.removeItem(LS_GREET_KEY);
-    loadName();
-  });
+  loadGreeting();
+  grContainer.addEventListener("submit", handleSubmit);
 }
 init();

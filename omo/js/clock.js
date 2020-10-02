@@ -1,16 +1,27 @@
 const clockContainer = document.querySelector(".js-clock");
 const clockTitle = clockContainer.querySelector("h1");
 
-function clock() {
+function setClock(clock) {
+  clockTitle.innerText =
+    clock.hour + " : " + clock.minute + " : " + clock.seconds;
+}
+function getClock() {
   const date = new Date();
-  let hours = ("0" + date.getHours()).slice(-2);
-  let minutes = ("0" + date.getMinutes()).slice(-2);
-  let seconds = ("0" + date.getSeconds()).slice(-2);
-  clockTitle.innerText = hours + ":" + minutes + ":" + seconds;
+  const hour = ("0" + date.getHours()).slice(-2);
+  const minute = ("0" + date.getMinutes()).slice(-2);
+  const seconds = ("0" + date.getSeconds()).slice(-2);
+  const clock = {
+    hour: hour,
+    minute: minute,
+    seconds: seconds,
+  };
+  return clock;
 }
 
-function init() {
-  setInterval(clock, 1000);
+function loadClock() {
+  const clock = getClock();
+  setClock(clock);
 }
-
-init();
+(function init() {
+  setInterval(loadClock, 100);
+})();

@@ -1,67 +1,68 @@
 const todoContainer = document.querySelector(".js-todo");
 const todoInput = todoContainer.querySelector("input");
-const todoList = document.querySelector(".js-todo__list");
+const todoList = document.querySelector(".js-todo-list");
 
-const LS_TODO_KEY = "todoList";
-let LIST_ARR = [];
+const LS_TODO = "todoList";
+let TODO_ARR = [];
 
-function deleteTodo(event) {
-  const li = event.target.parentNode;
-  console.log(li.id);
-  todoList.removeChild(li);
-}
-
-function saveLSTodo() {
-  localStorage.setItem(LS_TODO_KEY, JSON.stringify(LIST_ARR));
-}
-
-function addLiTodo(event) {
+function handleDelete(event) {
   event.preventDefault();
-  const todoLi = document.createElement("li");
-  const todoLiContent = document.createTextNode(todoInput.value);
+  const liNode = event.target.parentNode;
+  todoList.removeChild(liNode);
+  const newARR = TODO_ARR.filter(function (todos) {
+    return liNode.id != todos.id;
+  });
+  TODO_ARR = newARR;
+  setLsItem(TODO_ARR);
+}
+function paintList(text) {
+  const todoListE = document.createElement("li");
+  todoListE.innerHTML = text;
+  todoList.appendChild(todoListE);
+  todoList.appendChild(todoListE);
   const todoDelBtn = document.createElement("button");
-  todoDelBtn.addEventListener("click", deleteTodo);
-
-  let liObj = {
-    id: LIST_ARR.length + 1,
-    text: todoInput.value,
+  todoListE.appendChild(todoDelBtn);
+  todoDelBtn.addEventListener("click", handleDelete);
+  const todoObj = {
+    id: TODO_ARR.length + 1,
+    todo: text,
   };
-  todoLi.id = LIST_ARR.length + 1;
-  todoLi.text = todoInput.value;
-  LIST_ARR.push(liObj);
-
-  todoLi.appendChild(todoDelBtn);
-  todoLi.appendChild(todoLiContent);
-  todoList.appendChild(todoLi);
-
-  todoInput.value = null;
-  saveLSTodo();
+  todoListE.id = todoObj.id;
+  TODO_ARR.push(todoObj);
 }
 
-function loadTodo() {
-  const LS_TODOLIST = localStorage.getItem(LS_TODO_KEY);
-  if (LS_TODOLIST === null) {
-    localStorage.setItem(LS_TODO_KEY, "");
-  }
-  if (LS_TODOLIST !== "") {
-    LIST_ARR = JSON.parse(LS_TODOLIST);
-    LIST_ARR.forEach(function (toDo) {
-      const todoLi = document.createElement("li");
-      const todoLiContent = document.createTextNode(toDo.text);
-      const todoDelBtn = document.createElement("button");
+function handleSubmit(event) {
+  event.preventDefault();
 
-      todoLi.id = LIST_ARR.length + 1;
-      todoLi.text = todoLiContent;
-      todoDelBtn.addEventListener("click", deleteTodo);
-      todoLi.appendChild(todoDelBtn);
-      todoLi.appendChild(todoLiContent);
-      todoList.appendChild(todoLi);
+  const todoE = todoInput.value;
+  paintList(todoE);
+  todoInput.value = "";
+  setLsItem(TODO_ARR);
+}
+
+function setLsItem(TODO_ARR) {
+  localStorage.setItem(LS_TODO, JSON.stringify(TODO_ARR));
+}
+
+function getLsItem(todos) {
+  const todoArr = JSON.parse(todos);
+  if (todos !== null) {
+    todoArr.forEach(function (obj) {
+      paintList(obj.todo);
     });
   }
 }
 
+function loadTodo() {
+  const todos = localStorage.getItem(LS_TODO);
+  if (todos === null) {
+    setLsItem(TODO_ARR);
+  }
+  getLsItem(todos);
+}
+
 function init() {
   loadTodo();
-  todoContainer.addEventListener("submit", addLiTodo);
+  todoContainer.addEventListener("submit", handleSubmit);
 }
 init();

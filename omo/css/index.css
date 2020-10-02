@@ -1,6 +1,23 @@
-.showing {
+.show {
   display: block;
 }
-.hiding {
+.hide {
   display: none;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.bg {
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: fadeIn 0.2s linear;
 }
